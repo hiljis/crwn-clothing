@@ -1,20 +1,46 @@
-import { signInWithGooglePopup } from '../../utils/firebase/firebase.utils';
+import { useEffect } from 'react';
+import { getRedirectResult } from 'firebase/auth';
+
+import {
+	auth,
+	signInWithGooglePopup,
+	signInWithGoogleRedirect,
+} from '../../utils/firebase/firebase.utils';
 
 import { createUserDocumentFromAuth } from '../../utils/firebase/firebase.utils';
 
 const SignIn = () => {
-	const logGoogleUser = async () => {
+	useEffect(() => {
+		async function getGoogleRedirectResult() {
+			try {
+				const response = await getRedirectResult(auth);
+				if (response) {
+					const userDocRef = await createUserDocumentFromAuth(
+						response.user
+					);
+				}
+			} catch (err) {
+				console.error(err);
+			}
+		}
+		getGoogleRedirectResult();
+	}, []);
+
+	const logGooglePopupUser = async () => {
 		try {
 			const { user } = await signInWithGooglePopup();
 			const userDocRef = await createUserDocumentFromAuth(user);
 		} catch (error) {
-			// Handle Errors here.
-			// const errorCode = error.code;
-			// const errorMessage = error.message;
-			// The email of the user's account used.
-			// const email = error.customData.email;
-			// The AuthCredential type that was used.
-			// const credential = provider.credentialFromError(error);
+			console.error(error);
+		}
+	};
+
+	const logGoogleRedirectUser = async () => {
+		try {
+			const { user } = await signInWithGoogleRedirect();
+			// const userDocRef = await createUserDocumentFromAuth(user);
+			console.log(user);
+		} catch (error) {
 			console.error(error);
 		}
 	};
@@ -22,7 +48,12 @@ const SignIn = () => {
 	return (
 		<div>
 			<h1>Sign In Page</h1>
-			<button onClick={logGoogleUser}>Sign in with Google Popup</button>
+			<button onClick={logGooglePopupUser}>
+				Sign in with Google Popup
+			</button>
+			<button onClick={logGoogleRedirectUser}>
+				Sign in with Google Redirect
+			</button>
 		</div>
 	);
 };
