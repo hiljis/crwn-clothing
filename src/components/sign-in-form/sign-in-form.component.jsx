@@ -1,19 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-import './sign-in-form.styles.scss';
 import FormInput from '../form-input/form-input.component';
-import { createUserDocumentFromAuth } from '../../utils/firebase/firebase.utils';
 import Button from '../button/button.component';
 
-import { useEffect } from 'react';
 import { getRedirectResult } from 'firebase/auth';
-
 import {
 	auth,
 	signInAuthUserWithEmailAndPassword,
 	signInWithGooglePopup,
 	signInWithGoogleRedirect,
+	createUserDocumentFromAuth,
 } from '../../utils/firebase/firebase.utils';
+
+import './sign-in-form.styles.scss';
+
+const EMAIL_PASSWORD_MODE = 1;
+const GOOGLE_POPUP_MODE = 2;
+const GOOGLE_REDIRECT_MODE = 3;
 
 const defaultFormFields = {
 	email: '',
@@ -24,12 +27,19 @@ const SignInForm = () => {
 	const [formFields, setFormFields] = useState(defaultFormFields);
 	const { email, password } = formFields;
 
+	const clearForm = () => {
+		setFormFields({
+			email: '',
+			password: '',
+		});
+	};
+
 	useEffect(() => {
 		async function getGoogleRedirectResult() {
 			try {
-				const response = await getRedirectResult(auth);
-				if (response) {
-					await createUserDocumentFromAuth(response.user);
+				const userCredentials = await getRedirectResult(auth);
+				if (userCredentials) {
+					await createUserDocumentFromAuth(userCredentials.user);
 				}
 			} catch (err) {
 				console.error(err);
@@ -38,47 +48,29 @@ const SignInForm = () => {
 		getGoogleRedirectResult();
 	}, []);
 
-	const clearForm = () => {
-		setFormFields({
-			email: '',
-			password: '',
-		});
-	};
-
-	const signInGooglePopup = async () => {
+	const signInWith = async (signInMode) => {
 		try {
-			const { user } = await signInWithGooglePopup();
-			await createUserDocumentFromAuth(user);
-		} catch (err) {
-			console.error(err.message);
-		}
-	};
-
-	const signInGoogleRedirect = async () => {
-		try {
-			const { user } = await signInWithGoogleRedirect();
-			await createUserDocumentFromAuth(user);
-			console.log(user);
-		} catch (err) {
-			console.error(err.message);
-		}
-	};
-
-	const handleSubmit = async (event) => {
-		event.preventDefault();
-
-		try {
-			const { user } = await signInAuthUserWithEmailAndPassword(
-				email,
-				password
-			);
-			console.log(user);
-			// await createUserDocumentFromAuth(user);
+			let userCredentials;
+			if (signInMode === EMAIL_PASSWORD_MODE) {
+				userCredentials = await signInAuthUserWithEmailAndPassword(
+					email,
+					password
+				);
+			} else if (signInMode === GOOGLE_POPUP_MODE) {
+				userCredentials = await signInWithGooglePopup();
+			} else if (signInMode === GOOGLE_REDIRECT_MODE) {
+				userCredentials = await signInWithGoogleRedirect();
+			}
 		} catch (err) {
 			console.error(err.message);
 		} finally {
 			clearForm();
 		}
+	};
+
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		signInWith(EMAIL_PASSWORD_MODE);
 	};
 
 	const handleChange = (event) => {
@@ -122,14 +114,14 @@ const SignInForm = () => {
 						<Button
 							type="button"
 							buttonType="google"
-							onClick={signInGooglePopup}
+							onClick={() => signInWith(GOOGLE_POPUP_MODE)}
 						>
 							Sign In with Google
 						</Button>
 						<Button
 							type="button"
 							buttonType="google"
-							onClick={signInGoogleRedirect}
+							onClick={() => signInWith(GOOGLE_REDIRECT_MODE)}
 						>
 							Sign In with Google
 						</Button>

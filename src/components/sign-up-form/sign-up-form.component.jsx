@@ -32,9 +32,8 @@ const SignUpForm = () => {
 		event.preventDefault();
 
 		try {
-			if (password !== passwordConfirm) {
+			if (password !== passwordConfirm)
 				throw new Error('Passwords do not match!');
-			}
 
 			const { user } = await createAuthUserWithEmailAndPassword(
 				email,
