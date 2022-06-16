@@ -31,7 +31,7 @@ export const UserProvider = ({ children }) => {
 		});
 		// Stops listening when this component unmounts (when we close the application).
 		return unsubscribe;
-	}, []);
+	});
 
 	return (
 		<UserContext.Provider value={value}>{children}</UserContext.Provider>
