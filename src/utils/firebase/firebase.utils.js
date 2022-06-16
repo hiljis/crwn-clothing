@@ -4,6 +4,7 @@ import {
 	getAuth,
 	signInWithPopup,
 	signInWithRedirect,
+	signInWithEmailAndPassword,
 	GoogleAuthProvider,
 	createUserWithEmailAndPassword,
 } from 'firebase/auth';
@@ -31,11 +32,21 @@ googleProvider.setCustomParameters({
 
 export const auth = getAuth();
 
-export const signInWithGooglePopup = () => {
-	signInWithPopup(auth, googleProvider);
+export const signInWithGooglePopup = async () => {
+	try {
+		const userCredentials = await signInWithPopup(auth, googleProvider);
+		return userCredentials;
+	} catch (err) {
+		throw err;
+	}
 };
-export const signInWithGoogleRedirect = () => {
-	signInWithRedirect(auth, googleProvider);
+export const signInWithGoogleRedirect = async () => {
+	try {
+		const userCredentials = await signInWithRedirect(auth, googleProvider);
+		return userCredentials;
+	} catch (err) {
+		throw err;
+	}
 };
 
 export const db = getFirestore();
@@ -67,12 +78,27 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
 	if (!email || !password) return;
 
 	try {
-		const response = await createUserWithEmailAndPassword(
+		const userCredentials = await createUserWithEmailAndPassword(
 			auth,
 			email,
 			password
 		);
-		return response;
+		return userCredentials;
+	} catch (err) {
+		throw err;
+	}
+};
+
+export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+	if (!email || !password) return;
+
+	try {
+		const userCredentials = await signInWithEmailAndPassword(
+			auth,
+			email,
+			password
+		);
+		return userCredentials;
 	} catch (err) {
 		throw err;
 	}

@@ -6,13 +6,13 @@ const BUTTON_TYPE_CLASSES = {
 	default: '',
 };
 
-const Button = ({ text, buttonType, ...otherProps }) => {
+const Button = ({ children, buttonType, ...otherProps }) => {
 	return (
 		<button
 			className={`button-container ${BUTTON_TYPE_CLASSES[buttonType]}`}
 			{...otherProps}
 		>
-			{text}
+			{children}
 		</button>
 	);
 };
