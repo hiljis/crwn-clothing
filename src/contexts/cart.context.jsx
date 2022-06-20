@@ -68,7 +68,7 @@ export const CartProvider = ({ children }) => {
 			0
 		);
 		setCartTotal(newCartTotal);
-	}, [cartTotal]);
+	}, [cartTotal, cartItems]);
 
 	const addItemToCart = (cartItemToAdd) => {
 		setCartItems(addCartItem(cartItems, cartItemToAdd));
