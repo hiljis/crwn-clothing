@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import FormInput from '../form-input/form-input.component';
-import Button from '../button/button.component';
+import Button, { BUTTON_TYPE_CLASSES } from '../button/button.component';
 
 import { getRedirectResult } from 'firebase/auth';
 import {
@@ -12,7 +12,12 @@ import {
 	createUserDocumentFromAuth,
 } from '../../utils/firebase/firebase.utils';
 
-import './sign-in-form.styles.scss';
+import {
+	SignInContainer,
+	ButtonsContainer,
+	ButtonsAltContainer,
+	Header,
+} from './sign-in-form.styles.jsx';
 
 const EMAIL_PASSWORD_MODE = 1;
 const GOOGLE_POPUP_MODE = 2;
@@ -50,16 +55,12 @@ const SignInForm = () => {
 
 	const signInWith = async (signInMode) => {
 		try {
-			let userCredentials;
 			if (signInMode === EMAIL_PASSWORD_MODE) {
-				userCredentials = await signInAuthUserWithEmailAndPassword(
-					email,
-					password
-				);
+				await signInAuthUserWithEmailAndPassword(email, password);
 			} else if (signInMode === GOOGLE_POPUP_MODE) {
-				userCredentials = await signInWithGooglePopup();
+				await signInWithGooglePopup();
 			} else if (signInMode === GOOGLE_REDIRECT_MODE) {
-				userCredentials = await signInWithGoogleRedirect();
+				await signInWithGoogleRedirect();
 			}
 		} catch (err) {
 			console.error(err.message);
@@ -79,8 +80,8 @@ const SignInForm = () => {
 	};
 
 	return (
-		<div className="sign-in-container">
-			<h2>Already have an account</h2>
+		<SignInContainer>
+			<Header>Already have an account</Header>
 			<span>Sign in with your email and password</span>
 			<form onSubmit={handleSubmit}>
 				<FormInput
@@ -106,29 +107,29 @@ const SignInForm = () => {
 						onChange: handleChange,
 					}}
 				/>
-				<div className="buttons-container">
-					<Button buttonType="default" type="submit">
+				<ButtonsContainer>
+					<Button buttonType={BUTTON_TYPE_CLASSES.base} type="submit">
 						Sign in
 					</Button>
-					<div className="buttons-alt-container">
+					<ButtonsAltContainer>
 						<Button
 							type="button"
-							buttonType="google"
+							buttonType={BUTTON_TYPE_CLASSES.google}
 							onClick={() => signInWith(GOOGLE_POPUP_MODE)}
 						>
 							Sign In with Google
 						</Button>
 						<Button
 							type="button"
-							buttonType="google"
+							buttonType={BUTTON_TYPE_CLASSES.google}
 							onClick={() => signInWith(GOOGLE_REDIRECT_MODE)}
 						>
 							Sign In with Google
 						</Button>
-					</div>
-				</div>
+					</ButtonsAltContainer>
+				</ButtonsContainer>
 			</form>
-		</div>
+		</SignInContainer>
 	);
 };
 

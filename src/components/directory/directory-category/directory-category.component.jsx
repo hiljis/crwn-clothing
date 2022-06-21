@@ -1,19 +1,19 @@
-import { Link } from 'react-router-dom';
-import './directory-category.styles.scss';
+import {
+	DirectoryCategoryContainer,
+	BackgroundImage,
+	Content,
+} from './directory-category.styles.jsx';
 
 const DirectoryCategory = ({ category }) => {
-	const { title, imageUrl } = category;
+	const { title, imageUrl, route } = category;
 	return (
-		<Link className="directory-category" to={`shop/${title}`}>
-			<div
-				className="directory-category__background-img"
-				style={{ backgroundImage: `url(${imageUrl})` }}
-			></div>
-			<div className="directory-category__content">
+		<DirectoryCategoryContainer to={route}>
+			<BackgroundImage imageUrl={imageUrl}></BackgroundImage>
+			<Content>
 				<h2>{title}</h2>
 				<p>Shop Now</p>
-			</div>
-		</Link>
+			</Content>
+		</DirectoryCategoryContainer>
 	);
 };
 
