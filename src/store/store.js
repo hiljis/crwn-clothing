@@ -3,13 +3,15 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { myLoggerMiddleware } from './middleware/logger';
 // import logger from 'redux-logger';
+import thunk from 'redux-thunk';
 
 import { rootReducer } from './root-reducer';
 
 const persistConfig = {
 	key: 'root',
 	storage: storage,
-	blacklist: ['user'],
+	whitelist: ['cart'],
+	blacklist: ['user, categories'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -20,7 +22,7 @@ const middlewares = [
 
 export const store = configureStore({
 	reducer: persistedReducer,
-	middleware: [...middlewares],
+	middleware: [...middlewares, thunk],
 	devTools:
 		(process.env.NODE_ENV !== 'production' && window) ||
 		{
