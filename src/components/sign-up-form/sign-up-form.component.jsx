@@ -1,14 +1,12 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import FormInput from '../form-input/form-input.component';
-import {
-	createAuthUserWithEmailAndPassword,
-	createUserDocumentFromAuth,
-} from '../../utils/firebase/firebase.utils';
 
 import Button, { BUTTON_TYPE_CLASSES } from '../button/button.component';
 
 import { Header, SignUpContainer } from './sign-up-form.styles.jsx';
+import { signUpStart } from '../../store/user/user.action';
 
 const defaultFormFields = {
 	displayName: '',
@@ -20,6 +18,7 @@ const defaultFormFields = {
 const SignUpForm = () => {
 	const [formFields, setFormFields] = useState(defaultFormFields);
 	const { displayName, email, password, passwordConfirm } = formFields;
+	const dispatch = useDispatch();
 
 	const clearForm = () => {
 		setFormFields({
@@ -37,12 +36,7 @@ const SignUpForm = () => {
 			if (password !== passwordConfirm)
 				throw new Error('Passwords do not match!');
 
-			const { user } = await createAuthUserWithEmailAndPassword(
-				email,
-				password
-			);
-			user.displayName = displayName;
-			await createUserDocumentFromAuth(user);
+			dispatch(signUpStart(email, password, displayName));
 		} catch (err) {
 			console.error(err.message);
 		} finally {

@@ -23,9 +23,41 @@ export const emailSignInStart = (email, password) => {
 };
 
 export const signInSuccess = (user) => {
-	return { type: USER_ACTION_TYPES.SIGN_IN_SUCCES, payload: user };
+	return { type: USER_ACTION_TYPES.SIGN_IN_SUCCESS, payload: user };
 };
 
 export const signInFailed = (error) => {
 	return { type: USER_ACTION_TYPES.SIGN_IN_FAILED, payload: error };
+};
+
+export const signUpStart = (email, password, displayName) => {
+	return {
+		type: USER_ACTION_TYPES.SIGN_UP_START,
+		payload: { email, password, displayName },
+	};
+};
+
+export const signUpSuccess = (user) => {
+	return {
+		type: USER_ACTION_TYPES.SIGN_UP_SUCCESS,
+		payload: { user },
+	};
+};
+
+export const signUpFailed = (error) => {
+	return { type: USER_ACTION_TYPES.SIGN_UP_FAILED, payload: error };
+};
+
+export const signOutStart = () => {
+	return {
+		type: USER_ACTION_TYPES.SIGN_OUT_START,
+	};
+};
+
+export const signOutSuccess = () => {
+	return { type: USER_ACTION_TYPES.SIGN_OUT_SUCCESS };
+};
+
+export const signOutFailed = (error) => {
+	return { type: USER_ACTION_TYPES.SIGN_OUT_FAILED, payload: error };
 };
