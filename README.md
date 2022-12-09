@@ -1,6 +1,6 @@
 # Crown Clothing web shop
 
-URL: https://hiljis-crwn-clothing.netlify.app
+URL: https://hiljis-crwn.netlify.app
 
 # Tech Specs:
 Frontend framwork: React
